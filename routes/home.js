@@ -1,9 +1,12 @@
 var express = require('express');
 var router = express.Router();
+const fs = require("fs")
+const path = require("path")
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('home', { title: 'Home' });
+  let data = fs.readFileSync(path.resolve(__dirname, "../data/introductionArray.json"));
+  res.render('home', { title: 'Home', array: JSON.parse(data)});
 });
 
 module.exports = router;

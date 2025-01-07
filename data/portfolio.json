@@ -61,13 +61,5 @@
     "category": "anniversary",
     "header": "Company's 50th anniversary",
     "description": "The big company celebrated its 50th anniversary with this classy cake!"
-  },
-  {
-    "url": "https://www.google.com/images/srpr/logo3w.png",
-    "name": "gugel.png",
-    "alt": "google 1",
-    "category": "anniversary",
-    "header": "Google'd!",
-    "description": "It's not a cake, it's Google!"
   }
 ]

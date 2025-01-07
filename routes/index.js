@@ -7,7 +7,8 @@ const path = require("path")
 router.get('/', function(req, res, next) {
   let array = fs.readFileSync(path.resolve(__dirname, "../data/introductionArray.json"));
   let data = fs.readFileSync(path.resolve(__dirname, "../data/recommendations.json"));
-  res.render('index', { title: 'Express' , array: JSON.parse(array), data: JSON.parse(data)});
+  let cakes = fs.readFileSync(path.resolve(__dirname, "../data/portfolio.json"));
+  res.render('index', { title: 'Express' , array: JSON.parse(array), data: JSON.parse(data), cakes: JSON.parse(cakes)});
 });
 
 module.exports = router;

@@ -20,7 +20,7 @@ router.post('/', jsonParser, function(req, res, next) {
       return res.status(400).end('Invalid parameter: ' + key);
     }
     else if(req.body[key] === '') {
-      return res.status(400).end(key + "must have a str value");
+      return res.status(400).end(key + " must have a str value");
       }
     });
     if (req.body.url == null || req.body.name == null) {

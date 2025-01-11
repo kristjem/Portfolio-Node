@@ -13,6 +13,23 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/', jsonParser, function(req, res, next) {
+  // Validation of the request body
+  const expectedAttributes = ['avatar', 'name', 'role', 'description'];
+  
+  for (const key of Object.keys(req.body)) {
+    if (!expectedAttributes.includes(key)) {
+      return res.status(400).end('Invalid parameter: ' + key);
+    }
+    if (req.body[key] === '' && key !== 'avatar') {
+      return res.status(400).end(key + " must have a string value");
+    }
+    if (key === 'avatar') {
+      if (!req.body[key] || req.body[key] < 1 || req.body[key] > 3) {
+        return res.status(400).end('avatar must have an int value from 1 to 3');
+      }
+    }
+  }
+
   let rawdata = fs.readFileSync(path.resolve(__dirname, "../data/recommendations.json"));
   let recommendationsArray = JSON.parse(rawdata);
   if(recommendationsArray.filter(x => x.name === req.body.name).length == 0) {

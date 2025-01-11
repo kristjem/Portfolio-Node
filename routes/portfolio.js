@@ -14,9 +14,28 @@ router.get('/', function(req, res, next) {
 
 /* POST portfolio page. */
 router.post('/', jsonParser, function(req, res, next) {
+  const expectedAtributes = ['url', 'name', 'alt', 'category', 'header', 'description'];
+  Object.keys(req.body).forEach(key => {
+    if(!expectedAtributes.includes(key)) {
+      return res.status(400).end('Invalid parameter: ' + key);
+    }
+    else if(req.body[key] === '') {
+      return res.status(400).end(key + "must have a str value");
+      }
+    });
+    if (req.body.url == null || req.body.name == null) {
+      return res.status(400).end('url and name are required');
+    }
+    if (req.body.category != null) {
+      if (!(["wedding", "christmas", "birthday", "anniversary"].includes(req.body.category))) {
+        return res.status(400).end('Invalid category provided');
+    }
+  }
+
   let rawdata = fs.readFileSync(path.resolve(__dirname, "../data/portfolio.json"));
   let portfoliosArray = JSON.parse(rawdata);
   if(portfoliosArray.filter(x => x.name === req.body.name).length == 0) {
+    console.log('downloading image');
     download(req.body.url, req.body.name, function(){
       console.log('done');
     });
@@ -42,6 +61,7 @@ router.delete('/', jsonParser, function(req, res, next) {
 
 var download = function(url, filename, callback){
   request.head(url, function(err, res, body){
+    console.log(`downloading ${url} to ${filename}`);
     request(url).pipe(fs.createWriteStream(path.resolve(__dirname, '../data/img/'+ filename))).on('close', callback);
   });
 };

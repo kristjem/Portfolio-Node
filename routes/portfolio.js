@@ -15,7 +15,7 @@ router.get('/', function(req, res, next) {
 });
 
 /* POST portfolio page. */
-router.post('/', jsonParser, async function(req, res, next) {
+router.post('/', jsonParser, ensureLoggedIn, async function(req, res, next) {
   // VALIDATION
   // Set the alt attribute equal to the name attribute
   if (req.body.alt == null && req.body.name != null) {

@@ -42,13 +42,6 @@
     "description": "Make a wish before tasting this delicious cake!"
   },
   {
-    "name": "birthday_cake2.jpg",
-    "alt": "Birthday 2",
-    "category": "birthday",
-    "header": "Raspberry birthday cake",
-    "description": "Small Alexandra celebrated her third birthday with this delicious cake."
-  },
-  {
     "name": "anniversary_cake.jpeg",
     "alt": "Anniversary 1",
     "category": "anniversary",

@@ -15,7 +15,12 @@ router.get('/', function(req, res, next) {
 });
 
 /* POST portfolio page. */
-router.post('/', jsonParser, function(req, res, next) {
+router.post('/', jsonParser, async function(req, res, next) {
+  // VALIDATION
+  // Set the alt attribute equal to the name attribute
+  if (req.body.alt == null && req.body.name != null) {
+    req.body.alt = req.body.name;
+  }
   const expectedAtributes = ['url', 'name', 'alt', 'category', 'header', 'description'];
   Object.keys(req.body).forEach(key => {
     if(!expectedAtributes.includes(key)) {
@@ -34,17 +39,24 @@ router.post('/', jsonParser, function(req, res, next) {
     }
   }
 
+  // WHEN VALID DATA:
   let rawdata = fs.readFileSync(path.resolve(__dirname, "../data/portfolio.json"));
   let portfoliosArray = JSON.parse(rawdata);
-  if(portfoliosArray.filter(x => x.name === req.body.name).length == 0) {
-    console.log('downloading image');
-    download(req.body.url, req.body.name, function(){
-      console.log('done');
-    });
-    const newArray = portfoliosArray.concat([req.body]);
-    fs.writeFileSync(path.resolve(__dirname, "../data/portfolio.json"), JSON.stringify(newArray, null, 2));
+  if (portfoliosArray.filter(x => x.name === req.body.name).length == 0) {
+    console.log('await downloading image');
+    try {
+      await download(req.body.url, req.body.name);
+      console.log('Download done');
+      const newArray = portfoliosArray.concat([req.body]);
+      fs.writeFileSync(path.resolve(__dirname, "../data/portfolio.json"), JSON.stringify(newArray, null, 2));
+      res.status(200).json({ success: true, message: 'Resource added' });
+    } catch (error) {
+      console.error('Error downloading image:', error);
+      res.status(500).json({ success: false, message: 'Error downloading image' });
+    }
+  } else {
+    res.status(400).json({ success: false, message: 'Resource already exists' });
   }
-  res.end();
 });
 
 /* DELETE portfolio page. */
@@ -61,11 +73,19 @@ router.delete('/', jsonParser, ensureLoggedIn, function(req, res, next) {
   res.end();
 });
 
-var download = function(url, filename, callback){
-  request.head(url, function(err, res, body){
-    console.log(`downloading ${url} to ${filename}`);
-    request(url).pipe(fs.createWriteStream(path.resolve(__dirname, '../data/img/'+ filename))).on('close', callback);
+function download(url, filename) {
+  return new Promise((resolve, reject) => {
+    request.head(url, function(err, res, body) {
+      if (err) {
+        return reject(err);
+      }
+      console.log(`downloading ${url} to ${filename}`);
+      request(url)
+        .pipe(fs.createWriteStream(path.resolve(__dirname, '../data/img/' + filename)))
+        .on('close', resolve)
+        .on('error', reject);
+    });
   });
-};
+}
 
 module.exports = router;

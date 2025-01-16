@@ -27,4 +27,54 @@
         </div>
       <% });%>
     </div>
+    <div class="row">
+      <div class="col-xs-12 mx-auto mb-5">
+        <h3>Add a New Cake</h3>
+        <form id="addCakeForm" action="/portfolio" method="POST">
+          <div class="form-group">
+            <label for="url">Image URL</label>
+            <input type="url" class="form-control" id="url" name="url" required>
+          </div>
+          <div class="form-group">
+            <label for="name">Image Name</label>
+            <input type="text" class="form-control" id="name" name="name" required>
+          </div>
+          <div class="form-group">
+            <label for="category">Category</label>
+            <select class="form-control" id="category" name="category" required>
+              <option value="wedding">Wedding</option>
+              <option value="christmas">Christmas</option>
+              <option value="birthday">Birthday</option>
+              <option value="anniversary">Anniversary</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="header">Header</label>
+            <input type="text" class="form-control" id="header" name="header" required>
+          </div>
+          <div class="form-group">
+            <label for="description">Description</label>
+            <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">Add Cake</button>
+        </form>
+      </div>
+    </div>
+  </div>
 </section>
+<script src="/js/portfolioRequest.js"></script>
+<script>
+  document.getElementById('addCakeForm').addEventListener('submit', async function(event) {
+    event.preventDefault(); // Prevent the default form submission
+    console.log('Form submitted, calling sendPost js function');
+    const formData = {
+      url: document.getElementById('url').value,
+      name: document.getElementById('name').value,
+      category: document.getElementById('category').value,
+      header: document.getElementById('header').value,
+      description: document.getElementById('description').value
+    };
+
+    await sendPost('/portfolio', formData);
+  });
+</script>
